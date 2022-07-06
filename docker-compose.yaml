@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+
+  web:
+    tty: true
+
+    build:
+      context: . 
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000" 
+    networks: 
+      - backend
+    volumes:
+      - '.:/app'
+
+  mysql:
+    image: mysql:8.0
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      - MYSQL_DATABASE=bill_system
+      - MYSQL_ROOT_PASSWORD=mauFJcuf5dhRMQrjj
+    ports:
+      - '3306:3306'
+    volumes:
+      - db:/var/lib/mysql
+      - "./db:/docker-entrypoint-initdb.d"
+    networks: 
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+    db:
+        driver: local

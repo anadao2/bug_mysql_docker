@@ -1,0 +1,8 @@
+chalice
+httpie
+pytest 
+uplink
+pytest-chalice
+pytest-cov
+pytest-xdist
+mysql-connector-python

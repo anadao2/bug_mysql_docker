@@ -1,0 +1,8 @@
+chalice
+pytest 
+#uplink
+pytest-chalice
+pytest-cov
+pytest-xdist
+ipdb
+mysql-connector-python
