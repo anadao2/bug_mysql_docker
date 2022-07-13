@@ -1,3 +1,8 @@
+import csv
+import io
+from utils import DBConn
+
+
 class Bill:
 #   `document` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
 #   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -7,11 +12,21 @@ class Bill:
 #   `status` TINYINT(1) NOT NULL DEFAULT '0',
     
     def add(self, file):
-        query=[]
-        query+="INSERT INTO bills (document, email, amount, date, reference) VALUES "
-        for bill in file:
-            print(file)
-            query+="("+bill["cpf"], bill["email"], bill["amount"], bill["date"], bill["codigo"]+")"
-            with DBConn().cnx.cursor() as cursor:
-                cursor.execute(query)
-                DBConn().cnx.commit()
+        table="bills"
+        columns="(document, email, amount, date, reference)"
+
+        #print(file)
+        #print(file.decode())
+        
+        new_bytes_obj = io.BytesIO(file)
+        next(new_bytes_obj)
+        for line in new_bytes_obj:
+            print (line.decode())
+                    
+            #query+="("+bill["cpf"], bill["email"], bill["amount"], bill["date"], bill["codigo"]+")"
+            query = f"INSERT INTO {table} {columns} values ({str(line[0])})"
+            print(query)
+
+            #with DBConn().cnx.cursor() as cursor:
+            #    cursor.execute(query)
+            #    DBConn().cnx.commit()
