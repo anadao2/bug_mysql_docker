@@ -1,16 +1,10 @@
 import csv
 import io
+import codecs
 from utils import DBConn
 
 
 class Bill:
-#   `document` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-#   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-#   `amount` DECIMAL(6,2) NOT NULL DEFAULT '0.00',
-#   `date` DATE NOT NULL,
-#   `reference` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-#   `status` TINYINT(1) NOT NULL DEFAULT '0',
-    
     def add(self, file):
         table="bills"
         columns="(document, email, amount, date, reference)"
@@ -19,14 +13,23 @@ class Bill:
         #print(file.decode())
         
         new_bytes_obj = io.BytesIO(file)
-        next(new_bytes_obj)
-        for line in new_bytes_obj:
-            print (line.decode())
-                    
-            #query+="("+bill["cpf"], bill["email"], bill["amount"], bill["date"], bill["codigo"]+")"
-            query = f"INSERT INTO {table} {columns} values ({str(line[0])})"
-            print(query)
+        csv_reader = csv.reader(codecs.iterdecode(new_bytes_obj, 'utf-8'), delimiter=',')
+        for row in list(csv_reader)[5:]:
+            #print(row)
+                                       
+            values=str(row).replace(" ", "").replace("[", "").replace("]", "")            
+            query = f"INSERT INTO {table} {columns} values ({values})"
+            #print(query)
 
-            #with DBConn().cnx.cursor() as cursor:
-            #    cursor.execute(query)
-            #    DBConn().cnx.commit()
+            conn=DBConn()
+            with conn.cnx.cursor() as cursor:
+                cursor.execute(query)
+                conn.cnx.commit()
+       
+            # with conn.cnx.cursor() as cursor:   
+            #     cursor.execute("SELECT * FROM bills")
+
+            #     myresult = cursor.fetchall()
+
+            #     for x in myresult:
+            #         print(x)
